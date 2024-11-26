@@ -24,7 +24,6 @@ clean:
 # Build contracts + tests
 build:
 	@forge build
-	@cp -r compiled/. out/
 
 # Run tests
 test:

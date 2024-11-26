@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause-Clear
 pragma solidity ^0.8.4;
 
+import {Attestor} from "./Attestor.sol";
 import {InboxItem} from "../../src/Inbox.sol";
-import {DataAttestation} from "./DataAttestor.sol";
 import {SubscriptionConsumer} from "../../src/consumer/Subscription.sol";
 
 /// @title BalanceScale
@@ -13,11 +13,11 @@ contract BalanceScale is SubscriptionConsumer {
                                IMMUTABLE
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice EZKL verifier contract address
+    /// @notice ZK verifier address
     address internal immutable VERIFIER;
 
-    /// @notice EZKL attestor contract
-    DataAttestation internal immutable ATTESTOR;
+    /// @notice ZK attestor contract
+    Attestor internal immutable ATTESTOR;
 
     /*//////////////////////////////////////////////////////////////
                                 MUTABLE
@@ -53,13 +53,13 @@ contract BalanceScale is SubscriptionConsumer {
 
     /// @notice Initialize new BalanceScale
     /// @param registry registry address
-    /// @param attestor EZKL attestor address
-    /// @param verifier EZKL verifier address
-    constructor(address registry, address attestor, address verifier) SubscriptionConsumer(registry) {
-        // Initiate attestor contract
-        ATTESTOR = DataAttestation(attestor);
-        // Set verifier address
+    /// @param verifier ZK verifier address
+    /// @param attestor ZK attestor address
+    constructor(address registry, address verifier, address attestor) SubscriptionConsumer(registry) {
+        // Store verifier address
         VERIFIER = verifier;
+        // Initiate attestor contract
+        ATTESTOR = Attestor(attestor);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -89,12 +89,12 @@ contract BalanceScale is SubscriptionConsumer {
     }
 
     /// @notice Internal helper to collect instances from proof
-    /// @param proof EZKL proof
-    function _getInstances(bytes calldata proof) external pure returns (uint256[] memory) {
+    /// @param proof ZK proof
+    function _getInstances(bytes calldata proof) external pure returns (int256[] memory) {
         // Proof begins with 4-byte signature to Verifier (because Verifier is staticall'd from Attestor)
         // Thus, we first strip the first 4-bytes of proof to collect just function data
         // Then, we decode the instances array from the stripped proof
-        (, uint256[] memory instances) = abi.decode(proof[4:proof.length], (bytes, uint256[]));
+        (, int256[] memory instances) = abi.decode(proof[4:proof.length], (bytes, int256[]));
         return instances;
     }
 
@@ -140,7 +140,7 @@ contract BalanceScale is SubscriptionConsumer {
 
         // Set prediction to predicted result from instances array
         // Coeercing bytes memory to bytes calldata
-        uint256[] memory instances = this._getInstances(proof_);
+        int256[] memory instances = this._getInstances(proof_);
         predictions[subscriptionId] = int256(instances[instances.length - 1]);
     }
 }
