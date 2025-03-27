@@ -7,7 +7,7 @@ The Infernet SDK is a set of smart contracts from [Ritual](https://ritual.net) t
 Developers can inherit one of two simple interfaces, [`CallbackConsumer`](./src/consumer/Callback.sol) or [`SubscriptionConsumer`](./src/consumer/Subscription.sol) in their smart contracts, and consume one-time or recurring computation.
 
 > [!IMPORTANT]
-> Smart contract architecture, quick-start guides, and in-depth documentation can be found on the [Ritual documentation website](https://docs.ritual.net/infernet/sdk/architecture)
+> Smart contract architecture, quick-start guides, and in-depth documentation can be found on the [Ritual documentation website](https://ritualfoundation.org/docs/architecture)
 
 > [!NOTE]
 > Infernet SDK `v1.1.0` has been audited by [Trail of Bits](./audits/v1.1.0/trail-of-bits.pdf) and [Zellic](./audits/v1.1.0/zellic.pdf).
